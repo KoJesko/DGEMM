@@ -1,0 +1,10 @@
+modules = ["c-clang14"]
+compile = "make"
+run = "./dgemm_program 4096"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+build = ["sh", "-c", "make"]
+run = ["sh", "-c", "seed 1232"]
