@@ -5,7 +5,11 @@
 
 void run_dgemm(int size, int seed) {
     double *A, *B, *C;
-    setup(&A, &B, &C, seed, size);
+    if (setup(&A, &B, &C, seed, size) != 0) {
+        fprintf(stderr, "Could not set up matrices of size %d "
+                "(must be 1..%d and fit in memory).\n", size, MATRIX_MAX_SIZE);
+        return;
+    }
 
     clock_t start = clock();
     DGEMM(A, B, C, size);
@@ -39,6 +43,10 @@ int main(int argc, char *argv[]) {
     printf("Enter a custom matrix size: ");
     if (scanf("%d", &custom_size) != 1) {
         fprintf(stderr, "Invalid input. Exiting.\n");
+        return 1;
+    }
+    if (custom_size <= 0 || custom_size > MATRIX_MAX_SIZE) {
+        fprintf(stderr, "Matrix size must be between 1 and %d.\n", MATRIX_MAX_SIZE);
         return 1;
     }
     run_dgemm(custom_size, seed);
